@@ -1,0 +1,55 @@
+name: laravel package ci dev
+
+jobs:
+  tests:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: true
+      matrix:
+        os: [ ubuntu-latest, windows-latest ]
+        php: [ 8.0 ]
+        laravel: [ 8.*, 9.* ]
+        include:
+          - laravel: 8.*
+            testbench: ^6.24
+          - laravel: 9.*
+            testbench: ^7.4
+
+    name: P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Cache dependencies
+        uses: actions/cache@v2
+        with:
+          path: ~/.composer/cache/files
+          key: dependencies-laravel-${{ runner.os }}-${{ matrix.laravel }}-testbench-${{ matrix.testbench }}-php-${{ matrix.php }}-composer-${{ hashFiles('composer.json') }}
+
+      - name: Setup PHP ${{ matrix.php }}
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv, imagick, fileinfo
+
+      - name: Validate composer.json and composer.lock
+        run: composer validate
+
+      - name: Install dependencies
+        run: |
+            composer require "orchestra/testbench:${{ matrix.testbench }}" --no-interaction --no-update --dev
+            composer require "laravel/framework:${{ matrix.laravel }}" --no-interaction --no-update
+            composer update --prefer-dist --no-interaction
+
+      - name: Detect installed Laravel version
+        id: laravel_version
+        run: |
+          echo "::set-output name=LARAVEL_VERSION::$(echo "$(echo "$(composer show laravel/framework | grep versions | grep -Eow 'v[0-9]+' | sed 's/v//').*")")"
+          echo "Installed version $(echo "$(echo "$(composer show laravel/framework | grep versions | grep -Eow 'v[0-9]+' | sed 's/v//').*")") / Expected version ${{ matrix.laravel }}"
+
+      - name: Fail on incorrect Laravel version
+        if: steps.laravel_version.outputs.LARAVEL_VERSION != matrix.laravel
+        run: echo '::error::Incorrect Laravel version installed (${{ steps.laravel_version.outputs.LARAVEL_VERSION }})' && exit 1
+
+      - name: Run test suite
+        run: composer run-script test
