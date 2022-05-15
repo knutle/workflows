@@ -2,6 +2,17 @@ name: laravel package tagged release
 
 on:
   workflow_call:
+    inputs:
+      os:
+        required: true
+        type: string
+      php:
+        required: true
+        type: string
+      laravel:
+        required: false
+        type: string
+        default: "null"
 
 jobs:
   test:
@@ -9,16 +20,19 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        os: [ ubuntu-latest, windows-latest ]
-        php: [ 8.0 ]
-        laravel: [ 8.*, 9.* ]
+        os: ${{ fromJson(inputs.os) }}
+        php: ${{ fromJson(inputs.php) }}
+        laravel: ${{ fromJson(inputs.laravel) ?? "X" }}
+        laravel-version-string: "${{ inputs.laravel != 'null' ? 'L${{ matrix.laravel }} - ' : '' }} - "
         include:
+          - laravel: null
+            testbench: X
           - laravel: 8.*
             testbench: ^6.24
           - laravel: 9.*
             testbench: ^7.4
 
-    name: P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.os }}
+    name: P${{ matrix.php }} - ${{ matrix.laravel-version-string }} ${{ matrix.os }}
 
     steps:
       - uses: actions/checkout@v2

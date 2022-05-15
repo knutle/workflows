@@ -2,6 +2,17 @@ name: laravel package ci dev
 
 on:
   workflow_call:
+    inputs:
+      os:
+        required: true
+        type: string
+      php:
+        required: true
+        type: string
+      laravel:
+        required: false
+        type: string
+        default: "null"
 
 jobs:
   tests:
@@ -9,16 +20,19 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        os: [ ubuntu-latest, windows-latest ]
-        php: [ 8.0 ]
-        laravel: [ 8.*, 9.* ]
+        os: ${{ fromJson(inputs.os) }}
+        php: ${{ fromJson(inputs.php) }}
+        laravel: ${{ fromJson(inputs.laravel) ?? "X" }}
+        laravel-version-string: "${{ inputs.laravel != 'null' ? 'L${{ matrix.laravel }} - ' : '' }} - "
         include:
+          - laravel: null
+            testbench: X
           - laravel: 8.*
             testbench: ^6.24
           - laravel: 9.*
             testbench: ^7.4
 
-    name: P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.os }}
+    name: P${{ matrix.php }} - ${{ matrix.laravel-version-string }} ${{ matrix.os }}
 
     steps:
       - uses: actions/checkout@v2
@@ -27,7 +41,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ~/.composer/cache/files
-          key: dependencies-laravel-${{ runner.os }}-${{ matrix.laravel }}-testbench-${{ matrix.testbench }}-php-${{ matrix.php }}-composer-${{ hashFiles('composer.json') }}
+          key: composer-${{ runner.os }}-L${{ matrix.laravel }}-TB${{ matrix.testbench }}-P${{ matrix.php }}-${{ hashFiles('composer.json') }}
 
       - name: Setup PHP ${{ matrix.php }}
         uses: shivammathur/setup-php@v2
@@ -38,20 +52,24 @@ jobs:
       - name: Validate composer.json and composer.lock
         run: composer validate
 
-      - name: Install dependencies
+      - name: Update Laravel dependencies
+        if: matrix.laravel != null
         run: |
             composer require "orchestra/testbench:${{ matrix.testbench }}" --no-interaction --no-update --dev
             composer require "laravel/framework:${{ matrix.laravel }}" --no-interaction --no-update
-            composer update --prefer-dist --no-interaction
+
+      - name: Install dependencies
+        run: composer update --prefer-dist --no-interaction
 
       - name: Detect installed Laravel version
+        if: matrix.laravel != null
         id: laravel_version
         run: |
           echo "::set-output name=LARAVEL_VERSION::$(echo "$(echo "$(composer show laravel/framework | grep versions | grep -Eow 'v[0-9]+' | sed 's/v//').*")")"
           echo "Installed version $(echo "$(echo "$(composer show laravel/framework | grep versions | grep -Eow 'v[0-9]+' | sed 's/v//').*")") / Expected version ${{ matrix.laravel }}"
 
       - name: Fail on incorrect Laravel version
-        if: steps.laravel_version.outputs.LARAVEL_VERSION != matrix.laravel
+        if: matrix.laravel != null && steps.laravel_version.outputs.LARAVEL_VERSION != matrix.laravel
         run: echo '::error::Incorrect Laravel version installed (${{ steps.laravel_version.outputs.LARAVEL_VERSION }})' && exit 1
 
       - name: Run test suite
