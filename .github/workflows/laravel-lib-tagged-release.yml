@@ -1,5 +1,8 @@
 name: laravel package tagged release
 
+on:
+  workflow_call:
+
 jobs:
   test:
     runs-on: ${{ matrix.os }}

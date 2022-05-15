@@ -1,5 +1,8 @@
 name: laravel package ci dev
 
+on:
+  workflow_call:
+
 jobs:
   tests:
     runs-on: ${{ matrix.os }}
