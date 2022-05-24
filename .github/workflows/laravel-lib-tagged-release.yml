@@ -23,7 +23,6 @@ jobs:
         os: ${{ fromJson(inputs.os) }}
         php: ${{ fromJson(inputs.php) }}
         laravel: "${{ fromJson(inputs.laravel) == null && 'X' || fromJson(inputs.laravel) }}"
-        laravel-version-string: "${{ inputs.laravel != 'X' && 'L${{ matrix.laravel }} - ' || '' }} - "
         include:
           - laravel: null
             testbench: X
@@ -32,7 +31,7 @@ jobs:
           - laravel: 9.*
             testbench: ^7.4
 
-    name: P${{ matrix.php }} - ${{ matrix.laravel-version-string }} ${{ matrix.os }}
+    name: P${{ matrix.php }} - ${{ inputs.laravel != 'X' && 'L${{ matrix.laravel }} - ' }} ${{ matrix.os }}
 
     steps:
       - uses: actions/checkout@v2
