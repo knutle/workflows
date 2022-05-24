@@ -22,8 +22,8 @@ jobs:
       matrix:
         os: ${{ fromJson(inputs.os) }}
         php: ${{ fromJson(inputs.php) }}
-        laravel: "${{ fromJson(inputs.laravel) == null ? 'X' : fromJson(inputs.laravel) }}"
-        laravel-version-string: "${{ inputs.laravel != 'null' ? 'L${{ matrix.laravel }} - ' : '' }} - "
+        laravel: "${{ fromJson(inputs.laravel) == null && 'X' || fromJson(inputs.laravel) }}"
+        laravel-version-string: "${{ inputs.laravel != 'X' && 'L${{ matrix.laravel }} - ' || '' }} - "
         include:
           - laravel: null
             testbench: X
