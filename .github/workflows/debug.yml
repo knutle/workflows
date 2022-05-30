@@ -23,8 +23,13 @@ jobs:
         os: ${{ fromJson(inputs.os) }}
         php: ${{ fromJson(inputs.php) }}
         laravel: ${{ fromJson(inputs.laravel) }}
+        include:
+          - laravel: 8.*
+            testbench: ^6.24
+          - laravel: 9.*
+            testbench: ^7.4
 
-    name: P${{ matrix.php }} - L${{ matrix.laravel || inputs.laravel }} - ${{ matrix.os }}
+    name: P${{ matrix.php }} - L${{ matrix.laravel || inputs.laravel }}[T${{ matrix.testbench }}] - ${{ matrix.os }}
 
     steps:
       - uses: actions/checkout@v2
