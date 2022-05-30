@@ -94,10 +94,12 @@ jobs:
 
   release:
     needs: [tests]
+    env:
+      webhook: ${{ secrets.DEPLOY_WEBHOOK }}
     runs-on: ubuntu-latest
 
     steps:
       - name: Trigger deployment webhook
-        if: secrets.DEPLOY_WEBHOOK
+        if: ${{ env.webhook }} != ''
         run: curl "${{ secrets.DEPLOY_WEBHOOK }}"
 
