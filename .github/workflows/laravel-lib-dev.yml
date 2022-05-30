@@ -1,4 +1,4 @@
-name: laravel package ci dev src
+name: laravel package ci dev reference
 
 on:
   workflow_call:
@@ -33,11 +33,11 @@ jobs:
   
   tests:
     needs: [ matrix ]
+    runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: true
       matrix:
         include: ${{ fromJson(needs.matrix.outputs.matrix) }}
-    runs-on: ${{ matrix.os }}
     
     name: ${{ matrix.title }}
 

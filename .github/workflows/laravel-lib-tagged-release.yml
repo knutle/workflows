@@ -1,4 +1,4 @@
-name: laravel package tagged release
+name: laravel package tagged release reference
 
 on:
   workflow_call:
@@ -12,26 +12,34 @@ on:
       laravel:
         required: false
         type: string
-        default: "null"
+        default: null
 
 jobs:
-  test:
+  matrix:
+    name: Setup matrix
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.generate-matrix.outputs.matrix }} 
+    steps:
+      - name: Checkout shared workflows repo
+        uses: actions/checkout@v3
+        with:
+            repository: knutle/workflows
+
+      - name: Generate matrix
+        id: generate-matrix
+        shell: pwsh
+        run: "& .github/workflows/generate-matrix.ps1 -OS '${{ toJson(inputs.os) }}' -PHP '${{ toJson(inputs.php) }}' -Laravel '${{ toJson(inputs.laravel) }}'"
+  
+  tests:
+    needs: [ matrix ]
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: true
       matrix:
-        os: ${{ fromJson(inputs.os) }}
-        php: ${{ fromJson(inputs.php) }}
-        laravel: "${{ fromJson(inputs.laravel) == null && 'X' || fromJson(inputs.laravel) }}"
-        include:
-          - laravel: null
-            testbench: X
-          - laravel: 8.*
-            testbench: ^6.24
-          - laravel: 9.*
-            testbench: ^7.4
-
-    name: P${{ matrix.php }} - ${{ inputs.laravel != 'X' && 'L${{ matrix.laravel }} - ' }} ${{ matrix.os }}
+        include: ${{ fromJson(needs.matrix.outputs.matrix) }}
+    
+    name: ${{ matrix.title }}
 
     steps:
       - uses: actions/checkout@v2
