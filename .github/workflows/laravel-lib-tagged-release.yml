@@ -86,6 +86,13 @@ jobs:
       - name: Run test suite
         run: composer run-script test
 
+  release:
+    needs: [tests]
+    env:
+      webhook: ${{ secrets.DEPLOY_WEBHOOK }}
+    runs-on: ubuntu-latest
+
+    steps:
       - name: Promote release candidate if tests pass
         if: success()
         run: |
@@ -101,14 +108,7 @@ jobs:
           else
             echo "Current version does not seem to be a release candidate: $current"
           fi
-
-  release:
-    needs: [tests]
-    env:
-      webhook: ${{ secrets.DEPLOY_WEBHOOK }}
-    runs-on: ubuntu-latest
-
-    steps:
+          
       - name: Trigger deployment webhook
         if: ${{ env.webhook }} != ''
         run: curl "${{ secrets.DEPLOY_WEBHOOK }}"
