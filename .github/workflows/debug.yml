@@ -16,6 +16,8 @@ on:
 
 jobs:
   tests:
+    runs-on: ubuntu-latest
+    
     name: "O: '${{ inputs.os }}' - P: '${{ inputs.php }}' - L: '${{ inputs.laravel }}'"
 
     steps:
