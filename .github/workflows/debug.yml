@@ -34,7 +34,7 @@ jobs:
       - name: Generate matrix
         id: set-matrix
         shell: pwsh
-        run: "& .github/workflows/create-matrix.ps1 -OsMatrix '${{ toJson(inputs.os) }}' -PhpMatrix '${{ toJson(inputs.php) }}' -LaravelMatrix '${{ toJson(inputs.laravel) }}'"
+        run: "& .github/workflows/create-matrix.ps1 -OS '${{ toJson(inputs.os) }}' -PHP '${{ toJson(inputs.php) }}' -Laravel '${{ toJson(inputs.laravel) }}'"
   
   tests:
     needs: [ matrix ]

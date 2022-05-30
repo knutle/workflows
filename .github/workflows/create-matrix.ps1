@@ -1,18 +1,51 @@
 param(
-    [string]$OsInput, 
-    [string]$PhpInput, 
-    [string]$LaravelInput
+    [string]$OS, 
+    [string]$PHP, 
+    [string]$Laravel
 )
 
-$OsMatrix = ConvertFrom-Json $OsInput
-$PhpMatrix = ConvertFrom-Json $PhpInput
-$LaravelMatrix = ConvertFrom-Json $LaravelInput
+$OsMatrix = $OS | ConvertFrom-Json | ConvertFrom-Json
+$PhpMatrix = $PHP | ConvertFrom-Json | ConvertFrom-Json
 
-Write-Host "OS: " -NoNewLine
-Write-Host $OsMatrix
+if($Laravel) {
+    $LaravelMatrix = $Laravel | ConvertFrom-Json | ConvertFrom-Json
+}
 
-Write-Host "PHP: " -NoNewLine
-Write-Host $PhpMatrix
+$i = -1
+$Matrix = $OsMatrix | ForEach-Object { 
+    $currentOs = $_
 
-Write-Host "Laravel: " -NoNewLine
-Write-Host $LaravelMatrix
+    $PhpMatrix | ForEach-Object {
+        $currentPhp = $_
+
+        if($LaravelMatrix) {
+            $LaravelMatrix | ForEach-Object {
+                $currentLaravel = $_
+
+                if($currentLaravel -eq "8.*") {
+                    $currentTestbench = "^6.24"
+                } elseif($currentLaravel -eq "8.*") {
+                    $currentTestbench = "^7.4"
+                } else {
+                    $currentTestbench = "x"
+                }
+                
+                @{
+                    os = $currentOs
+                    php = $currentPhp
+                    laravel = $currentLaravel
+                    testbench = $currentTestbench
+                }
+            }
+        } else {
+            @{
+                os = $currentOs
+                php = $currentPhp
+                laravel = "x"
+                testbench = "x"
+            }
+        }
+    }
+}
+
+ConvertTo-Json $Matrix
