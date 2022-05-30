@@ -24,8 +24,8 @@ jobs:
         os: ${{ fromJson(inputs.os) }}
         php: ${{ fromJson(inputs.php) }}
         laravel: ${{ fromJson(inputs.laravel) }}
-        testbench: ${{ fromJson(inputs.laravel) }}
         include:
+          - testbench: ${{ fromJson(inputs.laravel) }}
           - laravel: 8.*
             testbench: ^6.24
           - laravel: 9.*
