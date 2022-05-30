@@ -43,6 +43,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Cache dependencies
         uses: actions/cache@v2
@@ -71,12 +73,24 @@ jobs:
           echo "::set-output name=LARAVEL_VERSION::$(echo "$(echo "$(composer show laravel/framework | grep versions | grep -Eow 'v[0-9]+' | sed 's/v//').*")")"
           echo "Installed version $(echo "$(echo "$(composer show laravel/framework | grep versions | grep -Eow 'v[0-9]+' | sed 's/v//').*")") / Expected version ${{ matrix.laravel }}"
 
+      - name: Detect latest package version
+        id: package_version
+        run: |
+          echo "::set-output name=PACKAGE_VERSION::$(git tag -l --sort=v:refname | tail -1)"
+          echo "Package version $(git tag -l --sort=v:refname | tail -1)"
+
       - name: Fail on incorrect Laravel version
         if: steps.laravel_version.outputs.LARAVEL_VERSION != matrix.laravel
         run: echo '::error::Incorrect Laravel version installed (${{ steps.laravel_version.outputs.LARAVEL_VERSION }})' && exit 1
 
       - name: Run test suite
         run: composer run-script test
+
+      - name: Promote release candidate if tests pass
+        if: success()
+        run: |
+          echo "Delete tag ${{ steps.package_version.outputs.PACKAGE_VERSION }} from remote"
+          git push --delete origin ${{ steps.package_version.outputs.PACKAGE_VERSION }}
 
   release:
     needs: [tests]
