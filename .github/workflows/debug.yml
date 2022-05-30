@@ -1,0 +1,22 @@
+name: debug
+
+on:
+  workflow_call:
+    inputs:
+      os:
+        required: true
+        type: string
+      php:
+        required: true
+        type: string
+      laravel:
+        required: false
+        type: string
+        default: "null"
+
+jobs:
+  tests:
+    name: "O: '${{ inputs.os }}' - P: '${{ inputs.php }}' - L: '${{ inputs.laravel }}'"
+
+    steps:
+      - uses: actions/checkout@v2
