@@ -19,55 +19,39 @@ $Matrix = $OsMatrix | ForEach-Object {
     $PhpMatrix | ForEach-Object {
         $currentPhp = $_
 
-        if($LaravelMatrix) {
-            $LaravelMatrix | ForEach-Object {
-                $currentLaravel = $_
+        $LaravelMatrix | ForEach-Object {
+            $currentLaravel = $_
 
-                if($currentLaravel -eq "x") {
-                    $currentLaravel = $null
-                }
-
-                if($currentLaravel -eq "8.*") {
-                    $currentTestbench = "^6.24"
-                } elseif($currentLaravel -eq "9.*") {
-                    $currentTestbench = "^7.4"
-                } else {
-                    $currentTestbench = $null
-                }
-
-                $title = "PHP $currentPhp - "
-
-                if($currentLaravel -ne $null) {
-                    $title += "L$currentLaravel - "
-                }
-
-                $title += "$currentOs"
-
-                if($currentLaravel -ne $null -and $currentTestbench -eq $null) {
-                    throw "Unable to resolve testbench version for Laravel $currentLaravel"
-                } elseif($currentTestbench -ne $null) {
-                    Write-Host "$($title) - Using orchestra/testbench:$currentTestbench"
-                }
-                
-                @{
-                    title = $title
-                    os = $currentOs
-                    php = $currentPhp
-                    laravel = $currentLaravel
-                    testbench = $currentTestbench
-                }
+            if($currentLaravel -eq "8.*") {
+                $currentTestbench = "^6.24"
+            } elseif($currentLaravel -eq "9.*") {
+                $currentTestbench = "^7.4"
+            } else {
+                $currentTestbench = $null
             }
-        } else {
-            $title = "PHP $currentPhp - $currentOs"
 
-            Write-Host "$($title) - No Laravel"
+            $title = "PHP $currentPhp - "
 
+            if($currentLaravel) {
+                $title += "L$currentLaravel - "
+            }
+
+            $title += "$currentOs"
+
+            if($currentLaravel -ne $null -and $currentTestbench -eq $null) {
+                throw "Unable to resolve testbench version for Laravel $currentLaravel"
+            } elseif($currentTestbench -ne $null) {
+                Write-Host "$($title) - Using orchestra/testbench:$currentTestbench"
+            } else {
+                Write-Host "$($title) - No Laravel"
+            }
+            
             @{
                 title = $title
                 os = $currentOs
                 php = $currentPhp
-                laravel = $null
-                testbench = $null
+                laravel = $currentLaravel
+                testbench = $currentTestbench
             }
         }
     }
