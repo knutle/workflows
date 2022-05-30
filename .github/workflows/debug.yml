@@ -17,8 +17,6 @@ on:
 
 jobs:
   tests:
-    #runs-on: ${{ matrix.os }}
-    runs-on: ubuntu-latest
     strategy:
       fail-fast: true
       matrix:
@@ -28,7 +26,10 @@ jobs:
         testbench: [ "x" ]
         include:
           - os: ubuntu-latest
+            laravel: x
             testbench: "100"
+    #runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
 
     #name: P${{ matrix.php }} - L${{ matrix.laravel }}[T${{ matrix.testbench }}] - ${{ matrix.os }}
     #name: P ${{ inputs.php }} - L ${{ inputs.laravel }}[T ${{ matrix.testbench }}] - ${{ inputs.os }}
