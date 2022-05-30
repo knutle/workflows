@@ -43,8 +43,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Cache dependencies
         uses: actions/cache@v2
@@ -93,6 +91,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Promote release candidate if tests pass
         if: success()
         run: |
@@ -108,8 +110,8 @@ jobs:
           else
             echo "Current version does not seem to be a release candidate: $current"
           fi
-          
+
       - name: Trigger deployment webhook
-        if: ${{ env.webhook }} != ''
-        run: curl "${{ secrets.DEPLOY_WEBHOOK }}"
+        if: ${{ env.webhook != '' }}
+        run: curl "${{ env.webhook }}"
 
