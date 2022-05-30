@@ -12,7 +12,7 @@ on:
       laravel:
         required: false
         type: string
-        default: "null"
+        default: "x"
 
 jobs:
   tests:
@@ -23,6 +23,7 @@ jobs:
         os: ${{ fromJson(inputs.os) }}
         php: ${{ fromJson(inputs.php) }}
         laravel: ${{ fromJson(inputs.laravel) }}
+        testbench: x
         include:
           - laravel: 8.*
             testbench: ^6.24
