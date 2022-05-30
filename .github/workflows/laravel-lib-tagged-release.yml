@@ -92,11 +92,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Promote release candidate if tests pass
-        if: success()
         run: |
           current="$(git tag -l --sort=v:refname | tail -1)"
 
@@ -105,12 +101,13 @@ jobs:
 
             echo "Promoting $current to $next"
 
-            git config --global user.email "release-bot@knutle.dev"
-            git config --global user.name "Release Bot"
+            git config user.name github-actions
+            git config user.email github-actions@github.com
 
             git commit --allow-empty -m "promote release candidate $current to $next"
             git tag $next
-            git push && git push --tags
+            git push
+            git push --tags
           else
             echo "Current version does not seem to be a release candidate: $current"
           fi
