@@ -17,8 +17,13 @@ on:
 jobs:
   tests:
     runs-on: ubuntu-latest
-    
-    name: "O: '${{ inputs.os }}' - P: '${{ inputs.php }}' - L: '${{ inputs.laravel }}'"
+    strategy:
+      fail-fast: true
+      matrix:
+        os: ${{ fromJson(inputs.os) }}
+        php: ${{ fromJson(inputs.php) }}
+
+    name: "O: ${{ matrix.os }}/${{ inputs.os }} - P: ${{ matrix.php }}/${{ inputs.php }} - L: ${{ matrix.laravel }}/${{ inputs.laravel }}"
 
     steps:
       - uses: actions/checkout@v2
