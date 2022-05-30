@@ -31,13 +31,10 @@ jobs:
         with:
             repository: knutle/workflows
 
-      - name: DEBUG
-        run: "ls; pwd"
-
       - name: Generate matrix
         id: set-matrix
         shell: pwsh
-        run: "& .github/workflows/create-matrix.ps1 -InputJson '${{ toJson(inputs) }}'"
+        run: "& .github/workflows/create-matrix.ps1 -OsMatrix '${{ toJson(inputs.os) }}' -PhpMatrix '${{ toJson(inputs.php) }}' -LaravelMatrix '${{ toJson(inputs.laravel) }}'"
   
   tests:
     needs: [ matrix ]

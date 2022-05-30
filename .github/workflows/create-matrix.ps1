@@ -1,7 +1,14 @@
-param([string]$InputJson)
+param(
+    [string]$OsMatrix, 
+    [string]$PhpMatrix, 
+    [string]$LaravelMatrix
+)
 
-$input = ConvertFrom-Json $InputJson
+Write-Host "OS: " -NoNewLine
+Write-Host $OsMatrix
 
-Write-Host "Generating MATRIX"
-Write-Host $InputJson
-$InputJson
+Write-Host "PHP: " -NoNewLine
+Write-Host $PhpMatrix
+
+Write-Host "Laravel: " -NoNewLine
+Write-Host $LaravelMatrix
