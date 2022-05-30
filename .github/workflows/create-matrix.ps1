@@ -1,7 +1,8 @@
 param(
     [string]$OS, 
     [string]$PHP, 
-    [string]$Laravel
+    [string]$Laravel,
+    [switch]$Raw
 )
 
 $OsMatrix = $OS | ConvertFrom-Json | ConvertFrom-Json
@@ -48,4 +49,9 @@ $Matrix = $OsMatrix | ForEach-Object {
     }
 }
 
-ConvertTo-Json $Matrix
+if ($Raw) {
+  Write-Host ($Matrix | ConvertTo-JSON)
+} else {
+  # Output the result for consumption by GitHub Actions
+  Write-Host "::set-output name=matrix::$($Matrix | ConvertTo-JSON -Compress))"
+}
