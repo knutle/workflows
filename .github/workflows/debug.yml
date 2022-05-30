@@ -12,7 +12,8 @@ on:
       laravel:
         required: false
         type: string
-        default: "x"
+        default: >-
+          [ "x" ]
 
 jobs:
   tests:
