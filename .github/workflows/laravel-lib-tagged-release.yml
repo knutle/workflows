@@ -90,6 +90,10 @@ jobs:
       webhook: ${{ secrets.DEPLOY_WEBHOOK }}
     runs-on: ubuntu-latest
 
+    # Pushes with GITHUB_TOKEN like these will not trigger any workflows, even if they fit the criteria
+    # Either we need to switch to using a PAT for checkout, or just accept that the RC tests should cover everything, 
+    # and the webhook from packagist will pick up on the newly promoted prod version anyway.
+
     steps:
       - uses: actions/checkout@v3
       - name: Promote release candidate if tests pass
