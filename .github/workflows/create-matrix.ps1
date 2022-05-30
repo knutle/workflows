@@ -1,8 +1,12 @@
 param(
-    [string]$OsMatrix, 
-    [string]$PhpMatrix, 
-    [string]$LaravelMatrix
+    [string]$OsInput, 
+    [string]$PhpInput, 
+    [string]$LaravelInput
 )
+
+$OsMatrix = ConvertFrom-Json $OsInput
+$PhpMatrix = ConvertFrom-Json $PhpInput
+$LaravelMatrix = ConvertFrom-Json $LaravelInput
 
 Write-Host "OS: " -NoNewLine
 Write-Host $OsMatrix
