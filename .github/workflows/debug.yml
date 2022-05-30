@@ -27,12 +27,8 @@ jobs:
         laravel: [ "x" ]
         testbench: [ "x" ]
         include:
-          - laravel: "x"
-            testbench: "x"
-          - laravel: 8.*
-            testbench: ^6.24
-          - laravel: 9.*
-            testbench: ^7.4
+          - os: ubuntu-latest
+            testbench: "100"
 
     #name: P${{ matrix.php }} - L${{ matrix.laravel }}[T${{ matrix.testbench }}] - ${{ matrix.os }}
     #name: P ${{ inputs.php }} - L ${{ inputs.laravel }}[T ${{ matrix.testbench }}] - ${{ inputs.os }}
