@@ -12,12 +12,7 @@ on:
       laravel:
         required: false
         type: string
-        default: >-
-          [ "x" ]
-
-#MATRIX_JSON: ${{{ format('{"os": {0}, "php": {1}, "laravel": {2}, "testbench": [ "x" ]}', inputs.os, inputs.php, inputs.laravel) }}}
-#MATRIX_JSON: '{"os": ${{{ inputs.os }}}, "php": ${{{ inputs.php }}}, "laravel": ${{{ inputs.laravel }}}, "testbench": [ "x" ]}'
-#MATRIX_JSON: ${{ format('{{"os": {0}, "php": {1}, "laravel": {2}, "testbench": [ "x" ]}}', inputs.os, inputs.php, inputs.laravel) }}
+        default: null
 
 jobs:
   matrix:
