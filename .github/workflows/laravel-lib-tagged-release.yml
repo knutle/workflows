@@ -89,8 +89,18 @@ jobs:
       - name: Promote release candidate if tests pass
         if: success()
         run: |
-          echo "Delete tag ${{ steps.package_version.outputs.PACKAGE_VERSION }} from remote"
-          git push --delete origin ${{ steps.package_version.outputs.PACKAGE_VERSION }}
+          current="$(git tag -l --sort=v:refname | tail -1)"
+
+          if [[ $current == v*-rc* ]]; then
+            next=$(echo $current | awk '{split($0, items, "-"); n=split(items[1], segments, "."); segments[n]++; for(i in segments) printf segments[i] "."}' | sed "s/\.$//g")
+
+            echo "Promoting $current to $next"
+
+            git tag $next
+            git push --tags
+          else
+            echo "Current version does not seem to be a release candidate: $current"
+          fi
 
   release:
     needs: [tests]
