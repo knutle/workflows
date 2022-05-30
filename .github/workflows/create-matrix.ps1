@@ -1,6 +1,7 @@
-param([string]$inputJson)
+param([string]$InputJson)
 
-$input = ConvertFrom-Json $inputJson
+$input = ConvertFrom-Json $InputJson
 
 Write-Host "Generating MATRIX"
-Write-Host $inputJson
+Write-Host $InputJson
+$InputJson

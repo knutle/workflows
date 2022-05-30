@@ -37,7 +37,7 @@ jobs:
       - name: Generate matrix
         id: set-matrix
         shell: pwsh
-        run: "& .github/workflows/create-matrix.ps1 -InputJson '${{ inputs }}'"
+        run: "& .github/workflows/create-matrix.ps1 -InputJson '${{ toJson(inputs) }}'"
   
   tests:
     needs: [ matrix ]
