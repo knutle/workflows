@@ -16,21 +16,33 @@ on:
           [ "x" ]
 
 jobs:
+  create-matrix:
+    name: Create Matrix
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }} 
+    steps:
+      - name: Generate matrix
+        id: set-matrix
+        env:
+          MATRIX_JSON: '
+            {
+              "os": ${{{ inputs.os }}},
+              "php": ${{{ inputs.php }}},
+              "laravel": ${{{ inputs.laravel }}},
+              "testbench": [ "x" ],
+            }
+          '
+        run: echo "::set-output name=matrix::$MATRIX_JSON"
+
   tests:
+    needs: [ matrix ]
     strategy:
       fail-fast: true
       matrix:
-        os: ${{ fromJson(inputs.os) }}
-        php: ${{ fromJson(inputs.php) }}
-        laravel: [ "x" ]
-        testbench: [ "x" ]
-        include:
-          - os: ubuntu-latest
-            laravel: x
-            testbench: "100"
-    #runs-on: ${{ matrix.os }}
-    runs-on: ubuntu-latest
-
+        include: ${{ fromJson(needs.matrix.outputs.matrix-json) }}
+    runs-on: ${{ matrix.os }}
+    
     #name: P${{ matrix.php }} - L${{ matrix.laravel }}[T${{ matrix.testbench }}] - ${{ matrix.os }}
     #name: P ${{ inputs.php }} - L ${{ inputs.laravel }}[T ${{ matrix.testbench }}] - ${{ inputs.os }}
     name: P ${{ matrix.php }} - L ${{ matrix.laravel }}[T ${{ matrix.testbench }}] - ${{ matrix.os }} --- P ${{ inputs.php }} - L ${{ inputs.laravel }}[T ${{ matrix.testbench }}] - ${{ inputs.os }}
