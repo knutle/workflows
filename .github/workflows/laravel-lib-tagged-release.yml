@@ -98,6 +98,6 @@ jobs:
 
     steps:
       - name: Trigger deployment webhook
-        if: ${{ secrets.DEPLOY_WEBHOOK }}
+        if: secrets.DEPLOY_WEBHOOK
         run: curl "${{ secrets.DEPLOY_WEBHOOK }}"
 
