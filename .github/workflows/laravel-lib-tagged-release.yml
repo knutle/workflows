@@ -99,18 +99,15 @@ jobs:
           if [[ $current == v*-rc* ]]; then
             next=$(echo $current | awk '{split($0, items, "-"); n=split(items[1], segments, "."); segments[n]++; for(i in segments) printf segments[i] "."}' | sed "s/\.$//g")
 
-            echo "Promoting $current to $next"
+            echo "Promoting $current to $next triggered by $GITHUB_ACTOR"
 
             git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
             git config user.name "$GITHUB_ACTOR"
-
-            echo "email: $GITHUB_ACTOR@users.noreply.github.com / name: $GITHUB_ACTOR"
             
-            git diff-index --quiet HEAD
             git commit --allow-empty -m "promote release candidate $current to $next"
             git tag $next
-            git push
-            git push --tags
+            git push origin HEAD:main
+            git push origin HEAD:main --tags
           else
             echo "Current version does not seem to be a release candidate: $current"
           fi
