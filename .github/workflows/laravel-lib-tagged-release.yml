@@ -91,7 +91,7 @@ jobs:
           git push --delete origin ${{ steps.package_version.outputs.PACKAGE_VERSION }}
 
   release:
-    needs: [test]
+    needs: [tests]
     runs-on: ubuntu-latest
 
     steps:
