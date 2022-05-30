@@ -24,10 +24,11 @@ jobs:
       matrix:
         os: ${{ fromJson(inputs.os) }}
         php: ${{ fromJson(inputs.php) }}
-        laravel: [ 123 ]
+        laravel: [ "x" ]
+        testbench: [ "x" ]
         include:
-          - laravel: x
-            testbench: x
+          - laravel: "x"
+            testbench: "x"
           - laravel: 8.*
             testbench: ^6.24
           - laravel: 9.*
