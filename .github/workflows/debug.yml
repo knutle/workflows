@@ -25,14 +25,7 @@ jobs:
       - name: Generate matrix
         id: set-matrix
         env:
-          MATRIX_JSON: '
-            {
-              "os": ${{{ inputs.os }}},
-              "php": ${{{ inputs.php }}},
-              "laravel": ${{{ inputs.laravel }}},
-              "testbench": [ "x" ],
-            }
-          '
+          MATRIX_JSON: '{"os": ${{{ inputs.os }}}, "php": ${{{ inputs.php }}}, "laravel": ${{{ inputs.laravel }}}, "testbench": [ "x" ]}'
         run: echo "::set-output name=matrix::$MATRIX_JSON"
 
   tests:
@@ -48,5 +41,5 @@ jobs:
     name: P ${{ matrix.php }} - L ${{ matrix.laravel }}[T ${{ matrix.testbench }}] - ${{ matrix.os }} --- P ${{ inputs.php }} - L ${{ inputs.laravel }}[T ${{ matrix.testbench }}] - ${{ inputs.os }}
 
 
-    steps:
+     steps:
       - uses: actions/checkout@v2
