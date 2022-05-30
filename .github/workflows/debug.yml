@@ -41,6 +41,5 @@ jobs:
     #name: P ${{ matrix.php }} - L ${{ matrix.laravel }}[T ${{ matrix.testbench }}] - ${{ matrix.os }} --- P ${{ inputs.php }} - L ${{ inputs.laravel }}[T ${{ matrix.testbench }}] - ${{ inputs.os }}
     name: M ${{ matrix }}
 
-
-     steps:
+    steps:
       - uses: actions/checkout@v2
