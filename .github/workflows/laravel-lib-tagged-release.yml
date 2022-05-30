@@ -105,6 +105,9 @@ jobs:
 
             echo "Promoting $current to $next"
 
+            git config --global user.email "release-bot@knutle.dev"
+            git config --global user.name "Release Bot"
+
             git commit --allow-empty -m "promote release candidate $current to $next"
             git tag $next
             git push && git push --tags
