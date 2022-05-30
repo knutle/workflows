@@ -25,13 +25,24 @@ $Matrix = $OsMatrix | ForEach-Object {
 
                 if($currentLaravel -eq "8.*") {
                     $currentTestbench = "^6.24"
-                } elseif($currentLaravel -eq "8.*") {
+                } elseif($currentLaravel -eq "9.*") {
                     $currentTestbench = "^7.4"
                 } else {
                     $currentTestbench = "x"
                 }
+
+                $title = "PHP $currentPhp - "
+
+                if($currentLaravel -ne "x") {
+                    $title += "L$currentLaravel - "
+                }
+
+                $title += "$currentOs"
+
+                Write-Host "$($title) - Using orchestra/testbench:$currentTestbench"
                 
                 @{
+                    title = $title
                     os = $currentOs
                     php = $currentPhp
                     laravel = $currentLaravel
@@ -39,7 +50,12 @@ $Matrix = $OsMatrix | ForEach-Object {
                 }
             }
         } else {
+            $title = "PHP $currentPhp - $currentOs"
+
+            Write-Host "$($title) - No Laravel"
+
             @{
+                title = $title
                 os = $currentOs
                 php = $currentPhp
                 laravel = "x"
