@@ -101,11 +101,12 @@ jobs:
 
             echo "Promoting $current to $next"
 
-            git checkout HEAD^
+            git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+            git config user.name "$GITHUB_ACTOR"
 
-            git config user.name github-actions
-            git config user.email github-actions@github.com
-
+            echo "email: $GITHUB_ACTOR@users.noreply.github.com / name: $GITHUB_ACTOR"
+            
+            git diff-index --quiet HEAD
             git commit --allow-empty -m "promote release candidate $current to $next"
             git tag $next
             git push
