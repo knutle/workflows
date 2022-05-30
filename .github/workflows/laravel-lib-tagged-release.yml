@@ -105,8 +105,9 @@ jobs:
 
             echo "Promoting $current to $next"
 
+            git commit --allow-empty -m "promote release candidate $current to $next"
             git tag $next
-            git push --tags
+            git push && git push --tags
           else
             echo "Current version does not seem to be a release candidate: $current"
           fi
