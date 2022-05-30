@@ -35,7 +35,7 @@ jobs:
 
     #name: P${{ matrix.php }} - L${{ matrix.laravel }}[T${{ matrix.testbench }}] - ${{ matrix.os }}
     #name: P ${{ inputs.php }} - L ${{ inputs.laravel }}[T ${{ matrix.testbench }}] - ${{ inputs.os }}
-    name: P ${{ matrix.php }} - L ${{ matrix.laravel }}[T ${{ matrix.testbench }}] - ${{ matrix.os }} --- ${{ inputs.laravel }}
+    name: P ${{ matrix.php }} - L ${{ matrix.laravel }}[T ${{ matrix.testbench }}] - ${{ matrix.os }} --- P ${{ inputs.php }} - L ${{ inputs.laravel }}[T ${{ matrix.testbench }}] - ${{ inputs.os }
 
 
     steps:
