@@ -30,7 +30,7 @@ jobs:
           - laravel: 9.*
             testbench: ^7.4
 
-    name: "P${{ matrix.php }} - ${{ inputs.laravel != 'X' && ('L' && ${{ matrix.laravel }} && ' - ') }} ${{ matrix.os }} //O: ${{ matrix.os }}/${{ inputs.os }} - P: ${{ matrix.php }}/${{ inputs.php }} - L: ${{ matrix.laravel }}/${{ inputs.laravel }}"
+    name: "P${{ matrix.php }} - ${{ inputs.laravel != 'X' && ${'L' && ${{ matrix.laravel }} && ' - '} }} ${{ matrix.os }} //O: ${{ matrix.os }}/${{ inputs.os }} - P: ${{ matrix.php }}/${{ inputs.php }} - L: ${{ matrix.laravel }}/${{ inputs.laravel }}"
 
     steps:
       - uses: actions/checkout@v2
