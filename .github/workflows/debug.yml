@@ -26,8 +26,14 @@ jobs:
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }} 
     steps:
-      - uses: actions/checkout@v2
-      
+      - name: Checkout shared workflows repo
+        uses: actions/checkout@v3
+        with:
+            repository: knutle/workflows
+
+      - name: DEBUG
+        run: "ls; pwd"
+
       - name: Generate matrix
         id: set-matrix
         shell: pwsh
