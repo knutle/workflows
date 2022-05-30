@@ -15,6 +15,10 @@ on:
         default: >-
           [ "x" ]
 
+#MATRIX_JSON: ${{{ format('{"os": {0}, "php": {1}, "laravel": {2}, "testbench": [ "x" ]}', inputs.os, inputs.php, inputs.laravel) }}}
+#MATRIX_JSON: '{"os": ${{{ inputs.os }}}, "php": ${{{ inputs.php }}}, "laravel": ${{{ inputs.laravel }}}, "testbench": [ "x" ]}'
+#MATRIX_JSON: ${{ format('{{"os": {0}, "php": {1}, "laravel": {2}, "testbench": [ "x" ]}}', inputs.os, inputs.php, inputs.laravel) }}
+
 jobs:
   create-matrix:
     name: Create Matrix
@@ -24,10 +28,9 @@ jobs:
     steps:
       - name: Generate matrix
         id: set-matrix
-        env:
-          MATRIX_JSON: '{"os": ${{{ inputs.os }}}, "php": ${{{ inputs.php }}}, "laravel": ${{{ inputs.laravel }}}, "testbench": [ "x" ]}'
-        run: echo "::set-output name=matrix::$MATRIX_JSON"
-
+        shell: pwsh
+        run: "& .github/workflows/create-matrix.ps1 -InputJson '${{ toJson(inputs) }}'"
+  
   tests:
     needs: [ matrix ]
     strategy:
